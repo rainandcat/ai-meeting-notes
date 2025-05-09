@@ -3,7 +3,6 @@ import openai
 import fitz
 import pandas as pd
 
-# OpenAI API key
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.set_page_config(page_title="Meeting Summary Tool", layout="centered")
@@ -39,9 +38,13 @@ def summarize_with_gpt(content):
 if uploaded_file is not None:
     file_content = read_file(uploaded_file)
     if file_content:
-        with st.spinner("Summarizing with GPT..."):
-            summary = summarize_with_gpt(file_content)
-        st.subheader("Summary:")
-        st.write(summary)
+        st.subheader("📄 Preview (first 300 characters):")
+        st.code(file_content[:300] + "..." if len(file_content) > 300 else file_content, language="text")
+
+        if st.button("🔄 Generate Summary"):
+            with st.spinner("Summarizing with GPT..."):
+                summary = summarize_with_gpt(file_content)
+            st.subheader("Summary:")
+            st.text_area("Summary Output", summary, height=300)
     else:
         st.error("Unsupported file type.")
