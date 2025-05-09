@@ -2,8 +2,9 @@ import streamlit as st
 import openai
 import fitz
 import pandas as pd
+import os
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 st.set_page_config(page_title="Meeting Summary Tool", layout="centered")
 st.title("AI Meeting Summarizer")
