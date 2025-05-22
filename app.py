@@ -21,21 +21,27 @@ if uploaded_file is not None:
         st.code(file_content[:300] + "..." if len(file_content) > 300 else file_content, language="text")
         
         if st.button("Generate Summary"):
-            with st.spinner("Summarizing with GPT..."):
-                summary = summarize_with_gpt(file_content)
-            st.subheader("Summary:")
-            st.text_area("Summary Output", summary, height=300)
+            try:
+                with st.spinner("Summarizing with GPT..."):
+                    summary = summarize_with_gpt(file_content)
+                st.subheader("Summary:")
+                st.text_area("Summary Output", summary, height=300)
 
-            # 情感分析
-            sentiment = analyze_sentiment(file_content)
-            sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
-            sentiment_counts[sentiment] += 1
-            
-            st.subheader("🔍 Sentiment Analysis")
-            st.write(f"The sentiment of this document is: {sentiment}")
+                # 情感分析
+                sentiment = analyze_sentiment(file_content)
+                sentiment_counts = {"Positive": 0, "Negative": 0, "Neutral": 0}
+                sentiment_counts[sentiment] += 1
+                
+                st.subheader("🔍 Sentiment Analysis")
+                st.write(f"The sentiment of this document is: {sentiment}")
 
-            # 畫圓餅圖
-            sentiment_plot = plot_sentiment_analysis(sentiment_counts)
-            st.pyplot(sentiment_plot)
+                # 畫圓餅圖
+                sentiment_plot = plot_sentiment_analysis(sentiment_counts)
+                st.pyplot(sentiment_plot)
+            except Exception as e:
+                if "429" in str(e):
+                    st.error("Error 429: Request limit reached or quota exceeded (e.g., insufficient credits).")
+                else:
+                    st.error(f"An error occurred: {e}")
     else:
         st.error("Unsupported file type.")
